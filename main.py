@@ -171,9 +171,9 @@ def nl2br(str):
   return str.replace('\r\n','\n').replace('\n','<br />\n')
 
 def print_with_template(self, view, params = {}):
-    fpath = os.path.join(os.path.dirname(__file__), 'templates', view)
-    html = template.render(fpath, params)
-    self.response.out.write(html)
+  fpath = os.path.join(os.path.dirname(__file__), 'templates', view)
+  html = template.render(fpath, params)
+  self.response.out.write(html)
 
 ## Models
 class Entry(db.Model):
