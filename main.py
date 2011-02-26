@@ -146,6 +146,7 @@ class ImageHandler(AuthHandler):
     self.response.headers['Content-Type'] = image.contentType.encode('utf-8')
     self.response.out.write(image.image)
 
+## Functions
 def quickGet(key):
   data = memcache.get(key)
   if data == None:
@@ -174,6 +175,9 @@ def print_with_template(self, view, params = {}):
   fpath = os.path.join(os.path.dirname(__file__), 'templates', view)
   html = template.render(fpath, params)
   self.response.out.write(html)
+
+def h(html):
+  return html.replace('&','&amp;').replace('<','&lt;').replace('>','&gt;').replace('"','&quot;')
 
 ## Models
 class Entry(db.Model):
@@ -228,9 +232,6 @@ def main():
     ('/(.*)', MainHandler)
   ], debug=True)
   util.run_wsgi_app(application)
-
-def h(html):
-  return html.replace('&','&amp;').replace('<','&lt;').replace('>','&gt;').replace('"','&quot;')
 
 if __name__ == '__main__':
   main()
