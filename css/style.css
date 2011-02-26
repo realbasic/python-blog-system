@@ -1,0 +1,49 @@
+div.entry{margin-bottom: 10px;}
+div.entryHeader{width:400px;}
+div.entry{width:400px;}
+div.entryDate{
+    font-size:small;
+    text-align:right;
+    margin-bottom:2px;
+}
+div.entryFooter{
+    margin-top:5px;
+    font-size:small;
+}
+div.entryDate{
+    font-size: x-small;
+}
+h1{
+    padding:5px 0 5px 5px;
+    border-left:#003399 8px solid;
+    border-bottom:#003399 1px solid;
+    font-weight: bold;
+    color:#333;
+    width:400px;
+    margin-bottom:0;
+}
+h2{
+    padding:5px 0 5px 5px;
+    border-left:#009900 8px solid;
+    border-bottom:#009900 1px solid;
+    font-size: small;
+    font-weight: bold;
+    color:#333;
+    margin-bottom:0;
+    width:390px;
+}
+h3{
+    padding:5px 0 5px 5px;
+    border-left:#99cc00 3px solid;
+    border-bottom:#009900 1px solid;
+    font-size: smaller;
+    color:#333;
+    margin-bottom:0;
+}
+.title a{text-decoration: none;}
+.delcommentbutton{
+  font-size: xx-small;
+}
+.delcommentpassword{
+  font-size: xx-small;
+}

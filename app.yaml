@@ -1,0 +1,13 @@
+application: python-blog-system
+version: 1
+runtime: python
+api_version: 1
+
+handlers:
+- url: /css/(.*\.css)
+  static_files: css/\1
+  upload: css/(.*\.css)
+
+- url: .*
+  script: main.py
+

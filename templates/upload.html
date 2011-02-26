@@ -1,0 +1,9 @@
+{% extends "base.html" %}
+
+
+{%block contents%}
+{%for image in images%}
+    <h2><img src="/image/{{image.key}}"/><br><input type="text" value="[img:{{image.key}}]" style="width:300px;font-size:x-small"/><input type="button" value="delete" onclick="location.href='/deleteImage/{{image.key}}'"></h2>
+{%endfor%}
+<h2><form action="/uploader" enctype="multipart/form-data" method="post"><input type="file" name="file"><input type="submit" value="Upload"></form></h2>
+{%endblock contents%}

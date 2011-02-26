@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="UTF-8"?> 
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"> 
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="ja" lang="ja"> 
+<head> 
+  <link rel="alternate" type="application/rss+xml" title="RSS" href="rss"/> 
+  <meta http-equiv="content-script-type" content="text/javascript"/> 
+  <meta http-equiv="content-type" content="text/html; charset=utf-8"/> 
+  <title>Python blog system</title> 
+  <link rel="stylesheet" type="text/css" href="/css/style.css"/> 
+  <meta name = "viewport" content = "width=420"/> 
+  <script type="text/javascript"> 
+  var _gaq = _gaq || [];
+  _gaq.push(['_setAccount', 'UA-20245912-2']);
+  _gaq.push(['_trackPageview']);
+  (function() {
+    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+  })();
+  </script></head> 
+<body> 
+<div id="header">
+{%block header%}
+<h1><a href="/">Python Blog System</a></h1>
+{%endblock header%}
+</div>
+
+<div id="middle">
+<div id="contents">
+{%block contents%}
+{%if login%}
+	<h2>[<a href="/post/">New</a>] [<a href="{{logout_url}}">Log out</a>]</h2>
+{%endif%}
+{%for entry in entries%}
+<div class="entry">
+	<div class="entryHeader"> 
+		<h2 class="title">
+			<a href="/entry/{{entry.key}}">{{entry.title}}</a>
+	{%if login%}
+			[<a href="/post/{{entry.key}}">edit</a>]
+	{%endif%}
+		</h2>
+		<div class="entryDate">{{entry.formattedDatetimeInJST}}</div>
+	</div>
+	<div class="body">
+		{{entry.formatted_body|safe}}
+	</div>
+	<div class="entryFooter">タグ:
+	{%for tag in entry.tagList%}
+	    <a href="/tag/{{tag}}"><span class="tag">{{tag}}</span></a>
+	{%endfor%}
+{%if detail%}
+</div>
+<h2>コメント</h2><div class="comments"><a name="comments">
+	{%for comment in entry.comments%}
+    <h3 class="comment">{{comment.nickname}}: {{comment.comment}}
+        <div style="float:right">
+          <form method="post" name="form" action="/deleteComment/{{comment.key}}">
+          <input type="text" name="delpass" class="delcommentpassword"/>
+          <input type="button" onclick="if(confirm('本当に削除しますか？'))form.submit()" value="削除" class="delcommentbutton"/>
+          </form>
+        </div><br clear="all">
+	</h3>
+	{%endfor%}
+    <div style="width:84px;float:left;font-size:xx-small;position:relative;top:6px;">名前</div>
+    <div style="width:184px;float:left;font-size:xx-small;position:relative;top:6px;">コメント</div>
+    <div style="width:100px;float:left;font-size:xx-small;position:relative;top:6px;">削除パス</div>
+    <br clear="all">
+    <form action="/postComment/{{entry.key}}" method="post" style="padding:0">
+    <input type="text" name="nickname" style="width:80px;">
+    <input type="text" name="comment" style="width:180px;">
+    <input type="text" name="delpass" style="width:50px;">
+    <input type="submit" value="投稿" style="width:50px">
+    </form></div>
+{%else%}
+    <a href="/entry/{{entry.key}}#comments" style="float:right">コメント({{entry.comment_count}})</a>
+</div>
+{%endif%}
+
+</div>
+{%endfor%}
+<div class="pager">
+	{%if prev or prev == 0 %}
+		[ <a href="/{{prev}}"> Prev </a> ]
+	{%endif%}
+	{%if next%}
+		[ <a href="/{{next}}"> Next </a> ]
+	{%endif%}
+</div>
+{%endblock contents%}
+
+</div>
+<div id="rightbar">
+{%block rightbar%}
+
+{%endblock rightbar%}
+</div>
+</div>
+<div id="footer">
+{%block footer%}
+{%endblock footer%}
+</div>
+<div>developed by <a href="http://php6.jp/python">python練習帳</a></div></body></html>
