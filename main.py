@@ -6,7 +6,16 @@ use_library('django', '1.2')
 from google.appengine.ext.webapp import util, template
 from google.appengine.api import users, memcache
 import urllib, datetime, re, os
-step = 10
+from ConfigParser import ConfigParser
+config = os.path.join(os.path.dirname(__file__), "config")
+default = {"step" : "10",
+           "analytics" : "UA-XXXXXXXX-X"}
+parser = ConfigParser(default)
+f_in = open(config, "r")
+parser.readfp(f_in)
+f_in.close()
+step = parser.getint("default","step")
+google_analytics = parser.get("log", "google_analytics")
 
 class AuthHandler(webapp.RequestHandler):
   def get(self, key = ""):
@@ -161,7 +170,8 @@ def nl2br(str):
 def print_with_template(self, view, params = {}):
   params.update({
     'login': users.is_current_user_admin(),
-    'logout_url': users.create_logout_url("/")
+    'logout_url': users.create_logout_url("/"),
+    'google_analytics': google_analytics,
   })
   fpath = os.path.join(os.path.dirname(__file__), 'templates', view)
   html = template.render(fpath, params)
