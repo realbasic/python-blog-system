@@ -9,7 +9,7 @@
 <h2>公開ステータス</h2>
 <label><input type="radio" value="0" name="public"{%if not entry.public%} checked="checked"{%endif%}>非公開</label>
 <label><input type="radio" value="1" name="public"{%if entry.public%} checked="checked"{%endif%}>公開</label>
-<h2>画像 [<a href="/uploader" target="_blank">uploader</a>]</h2>
+<h2>画像 [<a href="/uploader/{{key}}" target="_blank">uploader</a>]</h2>
 <div>
 {%if key%}
 <input type="button" value="delete" onclick="if(confirm('Are you sure to delete it?'))location.href='/delete/{{key}}'"/>

@@ -121,15 +121,16 @@ class EntryHandler(AuthHandler):
       self.redirect("/")
 
 class UploaderHandler(AuthHandler):
-  def get2(self):
-    print_with_template(self, 'upload.html', {'images':Image.all()})
-  def post2(self):
+  def get2(self, key):
+    print_with_template(self, 'upload.html', {'images': Entry.get(key).images, 'key': key})
+  def post2(self, key):
     if self.request.get('file'):
       image = Image()
       image.image = self.request.POST.get('file').file.read()
       image.contentType = self.request.body_file.vars['file'].headers['content-type']
+      image.entry = Entry.get(key)
       image.put()
-    self.redirect('/uploader')
+    self.redirect('/uploader/' + key)
 
 class DeleteImageHandler(AuthHandler):
   def get2(self, key):
@@ -219,6 +220,7 @@ class Comment(db.Model):
   nickname = db.TextProperty()
 
 class Image(db.Model):
+  entry = db.ReferenceProperty(Entry, collection_name = 'images')
   image = db.BlobProperty()
   contentType = db.StringProperty()
 
