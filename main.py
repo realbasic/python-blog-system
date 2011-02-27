@@ -161,6 +161,7 @@ def apply_filters(str):
   str = linkURLs(str)
   str = replaceStrongs(str)
   str = replaceImages(str)
+  str = replaceLists(str)
   return str
 
 def urlReplacer(match, limit = 45):
@@ -173,9 +174,12 @@ def replaceImages(str):
   return re.sub(r'\[img:(.*)\]', r'<img src="/image/\1" style="max-width:400px">', str)
 
 def replaceStrongs(str):
-  str = re.sub(r'\[strong\]', r'<strong>', str)
-  str = re.sub(r'\[/strong\]', r'</strong>', str)
+  str = re.sub(r'\[s(trong)?\]', r'<strong>', str)
+  str = re.sub(r'\[/s(trong)?\]', r'</strong>', str)
   return str
+
+def replaceLists(str):
+  return re.sub(re.compile('^-(.+)$', re.MULTILINE), r'<li>\1</li>', str)
 
 def nl2br(str):
   return str.replace('\r\n','\n').replace('\n','<br />\n')
