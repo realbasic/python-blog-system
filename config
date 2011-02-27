@@ -1,0 +1,5 @@
+[default]
+step=10
+
+[log]
+google_analytics=UA-XXXXXXXX-X
