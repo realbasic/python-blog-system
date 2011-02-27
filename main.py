@@ -32,11 +32,7 @@ class MainHandler(AuthHandler):
       page = int(pageStr)
     except ValueError:
       page = 0
-    entries = Entry.all().order("-datetime")
-    if not users.is_current_user_admin():
-      entries = entries.filter("datetime <", datetime.datetime.now())
-      entries = entries.filter("public =", True)
-    entries = entries.fetch(step + 1, page * step)
+    entries = filter_entries(Entry.all().order("-datetime")).fetch(step + 1, page * step)
     params = {
       'entries': entries[:step],
       'login': users.is_current_user_admin(),
@@ -50,7 +46,7 @@ class MainHandler(AuthHandler):
 
 class RSSHandler(AuthHandler):
   def get(self, pageStr):
-    print_with_template(self, 'rss.xml', {'entries':Entry.all().order("-datetime").filter("datetime <", datetime.datetime.now()).filter("public =", True).fetch(30)})
+    print_with_template(self, 'rss.xml', {'entries':filter_entries(Entry.all().order("-datetime")).fetch(30)})
 
 class AdminHandler(AuthHandler):
   def get2(self):
@@ -106,9 +102,7 @@ class TagHandler(AuthHandler):
     tagStr = urllib.unquote(key).decode('utf-8')
     tag = Tag.all().filter("tag =", tagStr).get()
     if tag:
-      entries = tag.entries
-      entries = entries.filter("datetime <", datetime.datetime.now())
-      entries = entries.filter("public =", True)
+      entries = filter_entries(tag.entries)
       params = {
         'entries': entries[:step],
         'login': users.is_current_user_admin(),
@@ -120,7 +114,11 @@ class TagHandler(AuthHandler):
 
 class EntryHandler(AuthHandler):
   def get(self, key):
-    print_with_template(self, 'index.html', {'entries':[Entry.get(key)], 'detail':True})
+    entry = Entry.get(key);
+    if users.is_current_user_admin() or (entry.datetime > datetime.datetime.now() and entry.public):
+      print_with_template(self, 'index.html', {'entries':[Entry.get(key)], 'detail':True})
+    else:
+      self.redirect("/")
 
 class UploaderHandler(AuthHandler):
   def get2(self):
@@ -176,6 +174,11 @@ def print_with_template(self, view, params = {}):
 
 def h(html):
   return html.replace('&','&amp;').replace('<','&lt;').replace('>','&gt;').replace('"','&quot;')
+
+def filter_entries(entries):
+  if not users.is_current_user_admin():
+    entries = entries.filter("datetime <", datetime.datetime.now()).filter("public =", True)
+  return entries;
 
 ## Models
 class Entry(db.Model):

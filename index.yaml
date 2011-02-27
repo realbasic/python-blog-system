@@ -19,6 +19,11 @@ indexes:
   properties:
   - name: public
   - name: datetime
+
+- kind: Entry
+  properties:
+  - name: public
+  - name: datetime
     direction: desc
 
 - kind: Entry
