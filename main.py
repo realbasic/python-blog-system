@@ -1,12 +1,10 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-from google.appengine.ext import webapp
+from google.appengine.ext import webapp, db
 from google.appengine.dist import use_library
 use_library('django', '1.2')
 from google.appengine.ext.webapp import util, template
-from google.appengine.ext import db
-from google.appengine.api import users
-from google.appengine.api import memcache
+from google.appengine.api import users, memcache
 import urllib, datetime, re, os
 step = 10
 
