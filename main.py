@@ -155,6 +155,14 @@ def quickGet(key):
     memcache.set(key = key, value = data, time=3600)
   return data
 
+def apply_filters(str):
+  str = h(str)
+  str = nl2br(str)
+  str = linkURLs(str)
+  str = replaceStrongs(str)
+  str = replaceImages(str)
+  return str
+
 def urlReplacer(match, limit = 45):
   return '<a href="%s" target="_blank">%s</a>' % (match.group(), match.group()[:limit] + ('...' if len(match.group()) > limit else ''))
 
@@ -209,7 +217,7 @@ class Entry(db.Model):
   def tagStr(self):
     return " ".join([Tag.get(x).tag for x in self.tags])
   def formatted_body(self):
-    return replaceImages(replaceStrongs(linkURLs(nl2br(h(self.body)))))
+    return apply_filters(self.body)
   def tagList(self):
     return [Tag.get(t).tag for t in self.tags]
   def comment_count(self):
