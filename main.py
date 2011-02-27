@@ -33,11 +33,7 @@ class MainHandler(AuthHandler):
     except ValueError:
       page = 0
     entries = filter_entries(Entry.all().order("-datetime")).fetch(step + 1, page * step)
-    params = {
-      'entries': entries[:step],
-      'login': users.is_current_user_admin(),
-      'logout_url': users.create_logout_url("/"),
-    }
+    params = {'entries': entries[:step]}
     if len(entries) > step:
       params['next'] = page + 1
     if page > 0:
@@ -103,12 +99,7 @@ class TagHandler(AuthHandler):
     tag = Tag.all().filter("tag =", tagStr).get()
     if tag:
       entries = filter_entries(tag.entries)
-      params = {
-        'entries': entries[:step],
-        'login': users.is_current_user_admin(),
-        'logout_url': users.create_logout_url("/"),
-      }
-      print_with_template(self, 'index.html', params)
+      print_with_template(self, 'index.html', {'entries': entries[:step]})
     else:
       print_with_template(self, 'error.html', {'message':"Tag %s does not exist" % h(tagStr)})
 
@@ -168,6 +159,10 @@ def nl2br(str):
   return str.replace('\r\n','\n').replace('\n','<br />\n')
 
 def print_with_template(self, view, params = {}):
+  params.update({
+    'login': users.is_current_user_admin(),
+    'logout_url': users.create_logout_url("/")
+  })
   fpath = os.path.join(os.path.dirname(__file__), 'templates', view)
   html = template.render(fpath, params)
   self.response.out.write(html)
