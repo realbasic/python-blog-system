@@ -50,7 +50,7 @@
 	</div>
 	<div class="entryFooter">タグ:
 	{%for tag in entry.tagList%}
-	    <a href="/tag/{{tag}}"><span class="tag">{{tag}}</span></a>
+	    <a href="/tag/{{tag}}/0"><span class="tag">{{tag}}</span></a>
 	{%endfor%}
 {%if detail%}
 </div>
@@ -84,10 +84,10 @@
 {%endfor%}
 <div class="pager">
 	{%if prev or prev == 0 %}
-		[ <a href="/{{prev}}"> Prev </a> ]
+		[ <a href="{%if tag %}/tag/{{tag}}{%endif%}/{{prev}}"> Prev </a> ]
 	{%endif%}
 	{%if next%}
-		[ <a href="/{{next}}"> Next </a> ]
+		[ <a href="{%if tag %}/tag/{{tag}}{%endif%}/{{next}}"> Next </a> ]
 	{%endif%}
 </div>
 {%endblock contents%}

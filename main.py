@@ -37,10 +37,7 @@ class AuthHandler(webapp.RequestHandler):
 
 class MainHandler(AuthHandler):
   def get(self, pageStr):
-    try:
-      page = int(pageStr)
-    except ValueError:
-      page = 0
+    page = parseInt(pageStr)
     entries = filter_entries(Entry.all().order("-datetime")).fetch(step + 1, page * step)
     params = {'entries': entries[:step]}
     if len(entries) > step:
@@ -103,12 +100,19 @@ class DeleteCommentHandler(AuthHandler):
     self.redirect('/entry/%s' % entry_key)
 
 class TagHandler(AuthHandler):
-  def get(self, key):
+  def get(self, key, pageStr):
+    page = parseInt(pageStr)
     tagStr = urllib.unquote(key).decode('utf-8')
     tag = Tag.all().filter("tag =", tagStr).get()
     if tag:
-      entries = filter_entries(tag.entries)
-      print_with_template(self, 'index.html', {'entries': entries[:step]})
+      entries = filter_entries(tag.entries.order("-datetime")).fetch(step + 1, page * step)
+      params = {'entries': entries[:step]}
+      if len(entries) > step:
+        params['next'] = page + 1
+      if page > 0:
+        params['prev'] = page - 1 
+      params['tag'] = tagStr
+      print_with_template(self, 'index.html', params)
     else:
       print_with_template(self, 'error.html', {'message':"Tag %s does not exist" % h(tagStr)})
 
@@ -184,7 +188,13 @@ def h(html):
 def filter_entries(entries):
   if not users.is_current_user_admin():
     entries = entries.filter("datetime <", datetime.datetime.now()).filter("public =", True)
-  return entries;
+  return entries
+
+def parseInt(str):
+  try:
+    return int(str)
+  except ValueError:
+    return 0
 
 ## Models
 class Entry(db.Model):
@@ -226,7 +236,7 @@ class Image(db.Model):
 
 def main():
   application = webapp.WSGIApplication([
-    ('/tag/(.*)', TagHandler),
+    ('/tag/(.*)/(.*)', TagHandler),
     ('/entry/(.*)', EntryHandler),
     ('/admin/?(.*)', AdminHandler),
     ('/postComment/?(.*)', PostCommentHandler),
